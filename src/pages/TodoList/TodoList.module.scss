@@ -73,17 +73,11 @@
             text-decoration: line-through;
             opacity: 0.4;
           }
-          .edit-btn {
-            border-radius: 0 6px 6px 0;
-            color: var(--white);
-            padding: 6px 20px;
-            background-color: var(--primary);
+
+          span {
+            max-width: 212px;
+            word-wrap: break-word;
           }
-        }
-      }
-      .list-item-btn {
-        button {
-          transform: scale(0.85);
         }
       }
     }

@@ -1,0 +1,11 @@
+.edit-item {
+  .edit-btn {
+    border-radius: 0 6px 6px 0;
+    color: var(--white);
+    padding: 6px 20px;
+    background-color: var(--primary);
+    &:hover {
+      background-color: var(--primary);
+    }
+  }
+}

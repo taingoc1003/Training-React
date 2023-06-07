@@ -2,6 +2,8 @@ import { useRef, useState } from 'react';
 import styles from './TodoList.module.scss';
 import className from 'classnames/bind';
 import _ from 'lodash';
+import BtnEditDelete from '../../components/BtnEditDelete/BtnEditDelete';
+import InputEdit from '../../components/InputEdit/InputEdit';
 
 const cx = className.bind(styles);
 
@@ -10,7 +12,7 @@ const TodoList = () => {
   const [textInput, setTextInput] = useState('');
   const [isEditing, setIsEditing] = useState(false);
   const [itemEdit, setItemEdit] = useState({});
-  const [showEdit, setShowEdit] = useState(false);
+  const [showEditDelete, setShowEditDelete] = useState(false);
   const ref = useRef(null);
 
   const newDate = new Date();
@@ -74,7 +76,7 @@ const TodoList = () => {
   const handleEditBtn = (item) => {
     setItemEdit(item);
     setIsEditing(true);
-    setShowEdit(true);
+    setShowEditDelete(true);
   };
 
   const handleDeleteTodo = (index) => {
@@ -90,17 +92,15 @@ const TodoList = () => {
   };
 
   const handleEditTodo = (todo) => {
-    ref.current.focus();
     let cloneListTodo = _.cloneDeep(listTodo);
     let indexEditTodo = cloneListTodo.findIndex((item) => item.id === todo.id);
     cloneListTodo[indexEditTodo] = itemEdit;
     setListTodo(cloneListTodo);
-    setShowEdit(false);
+    setShowEditDelete(false);
     setIsEditing(false);
   };
 
   const handleEnterEdit = (event, todo) => {
-    ref.current.focus();
     let cloneListTodo = _.cloneDeep(listTodo);
     if (event.key === 'Enter') {
       let indexEditTodo = cloneListTodo.findIndex(
@@ -108,7 +108,7 @@ const TodoList = () => {
       );
       cloneListTodo[indexEditTodo] = itemEdit;
       setListTodo(cloneListTodo);
-      setShowEdit(false);
+      setShowEditDelete(false);
       setIsEditing(false);
     }
   };
@@ -161,29 +161,15 @@ const TodoList = () => {
                           {isEditing ? (
                             <>
                               {itemEdit.id === item.id ? (
-                                <div className={cx('edit-item', 'input-group')}>
-                                  <input
-                                    type="text"
-                                    className={cx('edit-input', 'form-control')}
-                                    value={itemEdit.title}
-                                    ref={ref}
-                                    onChange={(event) =>
-                                      handleOnChangeEdit(event)
-                                    }
-                                    onKeyDown={(event) => {
-                                      handleEnterEdit(event, item);
-                                    }}
-                                  />
-                                  <div className="input-group-append">
-                                    <button
-                                      className={cx('edit-btn', 'btn')}
-                                      type="button"
-                                      onClick={() => handleEditTodo(item)}
-                                    >
-                                      Save
-                                    </button>
-                                  </div>
-                                </div>
+                                <InputEdit
+                                  className="edit-item form-control"
+                                  itemEdit={itemEdit}
+                                  handleOnChangeEdit={handleOnChangeEdit}
+                                  handleEnterEdit={handleEnterEdit}
+                                  handleEditTodo={handleEditTodo}
+                                  item={item}
+                                  textBtn="Save"
+                                />
                               ) : (
                                 <span>{item.title}</span>
                               )}
@@ -192,42 +178,26 @@ const TodoList = () => {
                             <span>{item.title}</span>
                           )}
                         </div>
-                        {showEdit ? (
+                        {showEditDelete ? (
                           <>
                             {itemEdit.id === item.id ? (
                               ''
                             ) : (
-                              <div className={cx('list-item-btn')}>
-                                <button
-                                  className="btn btn-warning"
-                                  onClick={() => handleEditBtn(item)}
-                                >
-                                  <i className="fa-solid fa-pen-to-square"></i>
-                                </button>
-                                <button
-                                  className="btn btn-danger"
-                                  onClick={() => handleDeleteTodo(index)}
-                                >
-                                  <i className="fa-solid fa-trash"></i>
-                                </button>
-                              </div>
+                              <BtnEditDelete
+                                item={item}
+                                index={index}
+                                handleEditBtn={handleEditBtn}
+                                handleDeleteTodo={handleDeleteTodo}
+                              />
                             )}
                           </>
                         ) : (
-                          <div className={cx('list-item-btn')}>
-                            <button
-                              className="btn btn-warning"
-                              onClick={() => handleEditBtn(item)}
-                            >
-                              <i className="fa-solid fa-pen-to-square"></i>
-                            </button>
-                            <button
-                              className="btn btn-danger"
-                              onClick={() => handleDeleteTodo(index)}
-                            >
-                              <i className="fa-solid fa-trash"></i>
-                            </button>
-                          </div>
+                          <BtnEditDelete
+                            item={item}
+                            index={index}
+                            handleEditBtn={handleEditBtn}
+                            handleDeleteTodo={handleDeleteTodo}
+                          />
                         )}
                       </li>
                     </>
