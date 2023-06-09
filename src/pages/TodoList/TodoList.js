@@ -1,9 +1,12 @@
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import styles from './TodoList.module.scss';
 import className from 'classnames/bind';
 import _ from 'lodash';
 import BtnEditDelete from '../../components/BtnEditDelete/BtnEditDelete';
 import InputEdit from '../../components/InputEdit/InputEdit';
+import { v4 as uuidv4 } from 'uuid';
+import { useDispatch } from 'react-redux';
+import { addTodo } from '../../redux/actions/todoAction';
 
 const cx = className.bind(styles);
 
@@ -14,6 +17,7 @@ const TodoList = () => {
   const [itemEdit, setItemEdit] = useState({});
   const [showEditDelete, setShowEditDelete] = useState(false);
   const ref = useRef(null);
+  const dispatch = useDispatch();
 
   const newDate = new Date();
   const date = newDate.getDate();
@@ -37,16 +41,11 @@ const TodoList = () => {
   ];
   const nowDay = weekday[newDate.getDay()];
 
-  function randomIntFromInterval(min, max) {
-    return Math.floor(Math.random() * (max - min + 1) + min);
-  }
-
   const handleAddTodo = () => {
-    let idItem = randomIntFromInterval(0, 9999);
     let cloneListTodo = _.cloneDeep(listTodo);
     if (textInput) {
       let todoItem = {
-        id: idItem,
+        id: uuidv4(),
         title: textInput,
       };
       cloneListTodo.push(todoItem);
@@ -56,13 +55,16 @@ const TodoList = () => {
     }
   };
 
+  useEffect(() => {
+    dispatch(addTodo(listTodo));
+  }, [listTodo]);
+
   const handleEnter = (event) => {
-    let idItem = randomIntFromInterval(0, 9999);
     let cloneListTodo = _.cloneDeep(listTodo);
     if (event.key === 'Enter') {
       if (textInput) {
         let todoItem = {
-          id: idItem,
+          id: uuidv4(),
           title: textInput,
         };
         cloneListTodo.push(todoItem);
